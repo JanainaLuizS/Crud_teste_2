@@ -2,6 +2,7 @@ package br.com.senai.teste.controller;
 
 import br.com.senai.teste.model.Aluno;
 import br.com.senai.teste.service.AlunoService;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<Aluno> cadastrar(
-            @RequestBody Aluno aluno) {
+          @Valid   @RequestBody Aluno aluno) {
 
         Aluno alunoCadastrado = alunoService.cadastrar(aluno);
         return ResponseEntity

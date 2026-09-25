@@ -2,6 +2,7 @@ package br.com.senai.teste.controller;
 
 import br.com.senai.teste.model.Livro;
 import br.com.senai.teste.service.LivroService;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class LivroController {
 
     @PostMapping
     public ResponseEntity<Livro> cadastrar(
-            @RequestBody Livro livro) {
+            @Valid @RequestBody Livro livro) {
 
         Livro livroCadastrado = livroService.cadastrar(livro);
         return ResponseEntity
@@ -57,14 +58,14 @@ public class LivroController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Livro> atualizar(@PathVariable int id, @RequestBody Livro novosDados) {
+    public ResponseEntity<Livro> atualizar(@PathVariable int id, @Valid @RequestBody Livro novosDados) {
+        
         Optional<Livro> livroAtualizado = livroService.atualizar(id, novosDados);
         if (livroAtualizado.isPresent()) {
             return ResponseEntity.ok(livroAtualizado.get());
-        } else {
+        } 
             return ResponseEntity.notFound().build();
         }
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(
