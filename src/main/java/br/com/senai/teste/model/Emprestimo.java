@@ -1,6 +1,8 @@
 package br.com.senai.teste.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,10 @@ public class Emprestimo {
     private LocalDate dataEmprestimo;
 
     private LocalDate dataDevolucao;
+
+    private LocalDate dataPrevistaDevolucao;
+
+    private static final BigDecimal MULTA_POR_DIA = new BigDecimal("2.00");
 
     public LocalDate getDataDevolucao() {
         return dataDevolucao;
@@ -69,5 +75,53 @@ public class Emprestimo {
         this.livro = livro;
     }
 
+    public LocalDate getDataPrevistaDevolucao() {
+        return dataPrevistaDevolucao;
+    }
+
+    public void setDataPrevistaDevolucao(LocalDate dataPrevistaDevolucao) {
+        this.dataPrevistaDevolucao = dataPrevistaDevolucao;
+    }
+
+    public String getSituacao() {
+        if (dataDevolucao != null) {
+            return "Devolvido";
+
+        }
+        if (dataPrevistaDevolucao == null) {
+            return "Sem previsão ";
+
+        }
+        if (dataPrevistaDevolucao.isBefore(LocalDate.now())) {
+            return "Atrasado";
+        }
+
+        return "Ativo";
+    }
+
+    public long getDiasAtraso() {
+
+        if (dataPrevistaDevolucao == null) {
+
+            return 0;
+        }
+    
+    LocalDate dataFinal;
+
+    if(dataDevolucao==null) {
+        dataFinal = LocalDate.now();
+    }else{
+        dataFinal = dataDevolucao;
+    }
+
+    if(!dataFinal.isAfter(dataPrevistaDevolucao)) {
+       
+        return 0;
+    }
+
+    return ChronoUnit.DAYS.between
+    (dataPrevistaDevolucao,dataFinal);
+
+}
 
 }
