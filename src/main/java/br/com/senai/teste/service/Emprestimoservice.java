@@ -120,6 +120,17 @@ public class EmprestimoService {
             return Optional.of(emprestimoRepository.save(emprestimo));
             
         }
+
+        // Desafio Página 18
+public List<Emprestimo> listarPorLivro(Integer livroId) {
+    return emprestimoRepository.findByLivroId(livroId);
+}
+
+//  Página 29
+public List<Emprestimo> listarAtrasadosPorAluno(Integer alunoId) {
+    return emprestimoRepository.findByAlunoIdAndDataPrevistaDevolucaoBeforeAndDataDevolucaoIsNull(alunoId, LocalDate.now());
+}
+
 }
 
             
