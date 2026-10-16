@@ -13,27 +13,24 @@ import br.com.senai.teste.model.Usuario;
 import br.com.senai.teste.service.UsuarioService;
 import jakarta.validation.Valid;
 
-@RestController 
-@RequestMapping ("/usuarios")
+@RestController
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService){
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping 
-     public ResponseEntity<Usuario>cadastrar(
-        @Valid @RequestBody UsuarioRequest dados){
+    @PostMapping
+    public ResponseEntity<UsuarioResponse> cadastrar(
+            @Valid @RequestBody UsuarioRequest dados) {
 
-            Usuario usuarioCadastrado = usuarioService.cadastrar(dados);
+        Usuario usuarioCadastrado = usuarioService.cadastrar(dados);
 
-UsuarioResponse usuarioResponse = new UsuarioResponse(usuarioCadastrado);
-
-            return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(usuarioCadastrado);
-        }
-      
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new UsuarioResponse(usuarioCadastrado));
+    }
 }

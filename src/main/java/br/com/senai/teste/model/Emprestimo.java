@@ -123,5 +123,12 @@ public class Emprestimo {
     (dataPrevistaDevolucao,dataFinal);
 
 }
+public BigDecimal getValorMulta() {
+    long dias = getDiasAtraso();
+    if (dias <= 0) {
+        return BigDecimal.ZERO;
+    }
+    return MULTA_POR_DIA.multiply(BigDecimal.valueOf(dias));
+}
 
 }

@@ -32,7 +32,7 @@ public class EmprestimoController {
         this.emprestimoService = emprestimoService;
     }
 
-    @PostMapping
+    @PostMapping //Realiza um novo empréstimo de livro para um aluno.
     public ResponseEntity<Emprestimo> cadastrar(@Valid @RequestBody EmprestimoRequest dados) {
         Integer alunoId = dados.getAlunoId();
         Integer livroId = dados.getLivroId();
@@ -53,12 +53,12 @@ public class EmprestimoController {
                 .status(HttpStatus.CREATED)
                 .body(emprestimo.get());
     }
-    @GetMapping 
+    @GetMapping //Retorna a lista completa de todos os empréstimos registrados no sistema (ativos, devolvidos e atrasados).
     public ResponseEntity <List<Emprestimo>> listar() {
         List<Emprestimo> emprestimos = emprestimoService.listar();
         return ResponseEntity.ok(emprestimos);
     }
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//Busca os detalhes de um empréstimo específico através do seu ID.
     public ResponseEntity<Emprestimo> buscarPorId(@PathVariable Integer id) {
         Optional<Emprestimo> emprestimo = emprestimoService.buscarPorId(id);
         if (emprestimo.isPresent()) {
@@ -66,7 +66,7 @@ public class EmprestimoController {
         }
         return ResponseEntity.notFound().build();
     }   
-    @PatchMapping("/{id}/devolucao")
+    @PatchMapping("/{id}/devolucao")//Registra a devolução do livro, gravando a data de entrega atual e alterando a situação do empréstimo para "Devolvido".
     public ResponseEntity<Emprestimo> devolver(@PathVariable Integer id) {
         Optional<Emprestimo> emprestimo = emprestimoService.devolver(id);
         if (emprestimo.isPresent()) {
@@ -74,25 +74,25 @@ public class EmprestimoController {
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping ("/ativos")
+    @GetMapping ("/ativos")//Retorna apenas os empréstimos que ainda estão em aberto (livros que ainda não foram devolvidos).
     public ResponseEntity<List<Emprestimo>> listarAtivos() {
         List<Emprestimo> emprestimos  = emprestimoService.listarAtivos();
         return ResponseEntity.ok(emprestimos);
     }
-    @GetMapping("/aluno/{alunoId}")
+    @GetMapping("/aluno/{alunoId}")//Traz o histórico completo de empréstimos de um aluno específico.
     public ResponseEntity<List<Emprestimo>> listarPorAluno(@PathVariable Integer alunoId) {
         
         List<Emprestimo> emprestimos = emprestimoService.listarPorAluno(alunoId);
         return ResponseEntity.ok(emprestimos);
     }
 
-    @GetMapping("/atrasados")
+    @GetMapping("/atrasados")//Retorna todos os empréstimos do sistema que estão com a data de devolução vencida em relação a hoje e ainda não foram entregues.
     public ResponseEntity<List<Emprestimo>> listarAtrasados() {
         List<Emprestimo> emprestimos = emprestimoService.listarAtrasados();
         return ResponseEntity.ok(emprestimos);
     }
 
-    @PatchMapping ("/{id}/renovacao")
+    @PatchMapping ("/{id}/renovacao")//Renova o empréstimo, atualizando a dataPrevistaDevolucao para uma nova data enviada na requisição.
     public ResponseEntity<Emprestimo> renovar(
         @PathVariable Integer id, @Valid @RequestBody RenovacaoRequest dados) {
         
@@ -102,4 +102,17 @@ public class EmprestimoController {
             }
             return ResponseEntity.ok(emprestimo.get());
         }
+
+    @GetMapping("/livro/{livroId}")//Traz o histórico completo de empréstimos de um livro específico (quais alunos já pegaram esse livro).
+    public ResponseEntity<List<Emprestimo>> listarPorLivro(@PathVariable Integer livroId) {
+        List<Emprestimo> emprestimos = emprestimoService.listarPorLivro(livroId);
+        return ResponseEntity.ok(emprestimos);
+    }
+
+    // Mostra apenas os empréstimos em atraso de um aluno específico.
+    @GetMapping("/aluno/{alunoId}/atrasados")
+    public ResponseEntity<List<Emprestimo>> listarAtrasadosPorAluno(@PathVariable Integer alunoId) {
+        List<Emprestimo> emprestimos = emprestimoService.listarAtrasadosPorAluno(alunoId);
+        return ResponseEntity.ok(emprestimos);
+    }
 }     
