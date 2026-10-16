@@ -58,6 +58,16 @@ public class Livro {
         this.anoPublicacao = anoPublicacao;
     }
 
+    private String nomeArquivoCapa;
+
+    public String getNomeArquivoCapa() {
+    return nomeArquivoCapa;
+}
+
+    public void setNomeArquivoCapa(String nomeArquivoCapa) {
+    this.nomeArquivoCapa = nomeArquivoCapa;
+}
+
     
     
     

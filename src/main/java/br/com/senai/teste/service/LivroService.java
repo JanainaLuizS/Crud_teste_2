@@ -1,10 +1,14 @@
 package br.com.senai.teste.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.senai.teste.model.Livro;
 
@@ -51,6 +55,46 @@ public class LivroService {
         livroRepository.deleteById(id);
         return true;
     }
+    public Livro salvarCapa(Integer id, MultipartFile arquivo) {
+
+    Optional<Livro> livroEncontrado = livroRepository.findById(id);
+
+    if (livroEncontrado.isEmpty()) {
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Livro não encontrado");
+    }
+
+    Livro livro = livroEncontrado.get();
+
+    String nomeArquivo = System.currentTimeMillis()
+            + "_"
+            + arquivo.getOriginalFilename();
+
+    File pasta = new File("uploads/capas");
+
+    if (!pasta.exists()) {
+        pasta.mkdirs();
+    }
+
+    File destino = new File(
+            pasta,
+            nomeArquivo).getAbsoluteFile();
+
+    try {
+        arquivo.transferTo(destino);
+    } catch (IOException erro) {
+        erro.printStackTrace();
+
+        throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Não foi possível salvar a capa");
+    }
+
+    livro.setNomeArquivoCapa(nomeArquivo);
+
+    return livroRepository.save(livro);
+}
 
 
     }
